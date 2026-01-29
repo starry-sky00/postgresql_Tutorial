@@ -61,7 +61,24 @@ primary key、foreign key、not null、unique、default和mysql的一样。
 1.有参数为null,则运算结果为空，例如：null=null返回null,least(10,null)返回10因为null忽略不计 
 2.字符串和数字比较，自动将字符串转换成数字，例如'2'=2返回t  
 
-
+# 函数
+## 数学函数  
+绝对值：ABS()  
+圆周率：PI()  
+平方根：SQRT()  
+求余数：MOD(x,y)  
+向上取整：CEIL()、CEILING()  
+向下取整：FLOOR()  
+四舍五入：ROUND(x,y),x是要舍入值，y是小数点左右几位开始舍入，如：round(232.38,1)返回232.4，round(232.38,-1)返回230  
+符号函数：SIGN()返回-1，0，1分别表示负数、0、正数  
+幂运算：POW(x,y)、exp()  
+对数函数：LOG()是以e为底数  
+等等  
+## 字符串函数  
+字符串拼接：
+`concat('postgresql','18.0')`输出postgresql18.0  
+`concat_ws('-','postgresql','18.0')`输出postgresql-18.0  
+去除头尾空格：`trim()`,还有去除头空格：`ltrim()`,去除尾空格：`r`
 
 
 
