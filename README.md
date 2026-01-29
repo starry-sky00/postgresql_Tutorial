@@ -15,19 +15,20 @@ postgresql学习笔记
 [pg数据库的数据类型](https://postgresql.ac.cn/docs/current/datatype.html)当手册查，用的时候再看也行但是要知道有什么类型    
 数据类型转换：
 方法一：
-'''
+```
 SELECT
   '100'::INTEGER,
   '01-OCT-2015'::DATE;
-'''
+```
 方法二：
-'''
+```
 SELECT
 	CAST ('100' AS INTEGER);
-'''
+```
 建数据库：create database mydb;  
 删除数据库：drop database mydb;  
 建表：  
+```
 create table ppol(  
 id Serial not null primary key,  
 name varchar(10)  
@@ -39,7 +40,8 @@ name varchar(25),
 deptId int,  
 salary float,  
 constraint fk_emp_dept1 foreign key (deptId) references ppol(id)  
-);  
+);
+``` 
 **注意：由于外键的关系，ppol被叫做父表，tb_1被叫做子表**  
 primary key、foreign key、not null、unique、default和mysql的一样。    
 修改表名：alter table ppol rename to tb_emp2;  
