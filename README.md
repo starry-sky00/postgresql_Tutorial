@@ -1,7 +1,7 @@
 # postgresql_Tutorial
 postgresql学习笔记  
 
-认识：postgresql是[对象关系型数据库](https://blog.csdn.net/lixin5456985/article/details/143727160)，关系型数据库使用表（tables）来存储数据，这些表之间通过关系（keys）连接。
+认识：postgresql是[对象关系型数据库](https://blog.csdn.net/lixin5456985/article/details/143727160)，关系型数据库使用表（tables）来存储数据，这些表之间通过关系（keys）连接。  
 [对象关系数据库](https://docs.pingcode.com/ask/102215.html)（Object-Relational Database, ORDB），是在关系数据库的基础上，增加了对“对象”的支持，具有如下特性：  
 
 **对象关系数据库支持自定义的复合数据类型。**  
@@ -12,33 +12,54 @@ postgresql学习笔记
 
 开发相关：在地理信息系统（GIS）中，对象关系数据库因其能够有效处理空间数据和地理信息。    
 [安装教程](https://jishuzhan.net/article/1945437962933678081)  
-[pg数据库的数据类型](https://postgresql.ac.cn/docs/current/datatype.html)  
-
+[pg数据库的数据类型](https://postgresql.ac.cn/docs/current/datatype.html)当手册查，用的时候再看也行但是要知道有什么类型    
+数据类型转换：
+方法一：
+'''
+SELECT
+  '100'::INTEGER,
+  '01-OCT-2015'::DATE;
+'''
+方法二：
+'''
+SELECT
+	CAST ('100' AS INTEGER);
+'''
 建数据库：create database mydb;  
 删除数据库：drop database mydb;  
 建表：  
-create table ppol(
-id Serial not null primary key,
-name varchar(10)
-);
-create table tb_1
-(
-id Serial not null primary key,
-name varchar(25),
-deptId int,
-salary float,
-constraint fk_emp_dept1 foreign key (deptId) references ppol(id)
-);
-**注意：由于外键的关系，ppol被叫做父表，tb_1被叫做子表**
-primary key、foreign key、not null、unique、default和mysql的一样。  
+create table ppol(  
+id Serial not null primary key,  
+name varchar(10)  
+);  
+create table tb_1  
+(  
+id Serial not null primary key,  
+name varchar(25),  
+deptId int,  
+salary float,  
+constraint fk_emp_dept1 foreign key (deptId) references ppol(id)  
+);  
+**注意：由于外键的关系，ppol被叫做父表，tb_1被叫做子表**  
+primary key、foreign key、not null、unique、default和mysql的一样。    
 修改表名：alter table ppol rename to tb_emp2;  
 修改字段类型：alter table ppol alter column name type varchar(30);  
 修改字段名：alter table ppol rename name to 姓名;    
-添加字段： alter table ppol add column sex varchar(2) not null default 'm';
-删除字段：alter table ppol drop sex;
-删除约束：alter table tb_1 drop constraint fk_emp_dept1;
-删除表：drop table if exists ppol,tb_1;
-删除表数据：delete from ppol;
-删除父表保留子表：思路（先删除两表之间的联系，然后删除父表）  
+添加字段： alter table ppol add column sex varchar(2) not null default 'm';  
+删除字段：alter table ppol drop sex;  
+删除约束：alter table tb_1 drop constraint fk_emp_dept1;  
+删除表：drop table if exists ppol,tb_1;  
+删除表数据：delete from ppol;  
+删除父表保留子表：思路（先删除两表之间的联系，然后删除父表）    
+插入数据：create table tmp1(num int);insert into tmp1 values (64);  
+查询数据：select num,num+10,num+10.567 from tmp1;**注意:**这里自动转换成了numeric类型，自动转换规则和c语言一样。  
+
+
+比较运算符规则：在sql中是=，就是java中的==    
+1.有参数为null,则运算结果为空，例如：null=null返回null,least(10,null)返回10因为null忽略不计 
+2.字符串和数字比较，自动将字符串转换成数字，例如'2'=2返回t  
+
+
+
 
 
