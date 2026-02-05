@@ -46,12 +46,12 @@ CREATE TABLE sal_emp (
 SELECT schedule[1:2][1:1] FROM sal_emp WHERE name = 'Bill';
 ```
 表示第一到二行的第一列，左闭右闭。
-如果任何维度被写为切片（即包含冒号），则所有维度都被视为切片。如果下标超出了数组边界（此情况不引发错误），则返回 NULL。  
+如果任何维度被写为切片（即包含冒号），则所有维度都被视为切片。如果下标超出了数组边界（此情况不引发错误），则返回 NULL。
 #### Data类型
 日期：DATE，时间：TIME，时间戳：TIMESTAMP，带时区时间戳：TIMESTAMPTZ  
 日期格式：YYYY-MM-DD，时间格式：HH:MM:SS，时间戳格式：YYYY-MM-DD HH:MM:SS  
 当前日期和时间：Now()
-日期加减：interval类型，例如：'1 day'::interval、'2 hours'::interval  
+日期加减：interval类型，例如：'1 day'::interval、'2 hours'::interval
 
 #### json类型：
 
@@ -68,7 +68,10 @@ SELECT
 	CAST ('100' AS INTEGER);
 ```
 # 基本操作
-建数据库：```create database mydb; ```
+建数据库：
+```postgresql
+create database mydb with owner 'postgre' encoding 'UTF8'; 
+```
 删除数据库：```drop database mydb; ```   
 建表：
 ```postgresql
@@ -119,6 +122,21 @@ create table user(
 );
 ALTER TABLE table_name ADD CONSTRAINT constraint_name PRIMARY KEY (column1, column2);
 ```
+## 外键
+```postgresql
+create table groups(
+    id serial primary key,
+    name varchar(10) unique,
+    user_id integer references user(id) on delete cascade SET NULL (user_id)
+)
+```
+1. ON DELETE 动作的默认值是 ON DELETE NO ACTION；这不需要指定。允许删除被引用表(user)中的删除操作继续进行。但是，FOREIGN KEY 约束仍然必须满足，因此此操作通常会导致错误。但是，FOREIGN KEY 约束的检查也可以延迟到事务的稍后阶段。在这种情况下，NO ACTION 设置将允许其他命令在检查约束之前“修复”情况，例如通过在被引用表(user)中插入另一个合适的行或从引用表(groups)中删除现在悬空的行。   
+    1. RESTRICT 它阻止删除被引用的行。RESTRICT 不允许将检查推迟到事务稍后。
+    2. CASCADE 指定当被引用的行被删除时，引用它的行也将被自动删除。
+    3. SET NULL 和 SET DEFAULT。当被引用的行被删除时，这些会将引用行中的引用列设置为 null 或其默认值。请注意，这些不会让您免于遵守任何约束。  
+2. ON UPDATE 它在被引用列被更改（更新）时调用 
+    1. CASCADE 子表中所有关联的外键值会被自动同步更新
+    2. 
 ## 唯一索引
 唯一索引确保索引列中的每个值都是唯一的，这意味着不能有重复的值。唯一索引可以应用于一个或多个列，以确保数据的完整性。  
 一般逻辑键使用unique约束，物理键使用primary key约束。  
@@ -144,7 +162,7 @@ CREATE INDEX index_name ON table_name USING GIN (to_tsvector('english', column_n
 ```  
 ## 底层实现
 PostgreSQL 使用 B 树（B-tree）作为默认的索引结构。B 树是一种自平衡的树数据结构，适用于范围查询和排序操作。 B 树索引通过维护有序的键值对，使得查找、插入和删除操作都能在对数时间内完成。  
-除了 B 树，PostgreSQL 还支持其他类型的索引结构，如哈希索引（Hash Index）、GiST 索引（Generalized Search Tree）和 GIN 索引（Generalized Inverted Index），每种索引类型都有其特定的应用场景和优势。  
+除了 B 树，PostgreSQL 还支持其他类型的索引结构，如哈希索引（Hash Index）、GiST 索引（Generalized Search Tree）和 GIN 索引（Generalized Inverted Index），每种索引类型都有其特定的应用场景和优势。
 
 # 视图
 视图是基于 SQL 查询结果集的虚拟表。视图本身不存储数据，而是动态地从基础表中检索数据。视图可以简化复杂的查询，提高代码的可读性和维护性。  
@@ -184,5 +202,6 @@ SELECT * FROM view_name;
 2.根据用户界面原型设计数据库
 
 ## how do this?
-1.思考应用的主要实体是什么.优先创建这个表
+1.思考应用的主要实体是什么.优先创建这个表  
+2.整数做主键，字符串做逻辑键，因为整数处理起来高效  
 
